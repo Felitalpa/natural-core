@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Natural Core</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+/* ============================================================
+   TOKENS — DARK / LIGHT
+============================================================ */
+:root,[data-theme="dark"]{
+  --bg:          #0B0D14;
+  --bg2:         #0F1120;
+  --surface:     rgba(255,255,255,0.04);
+  --surface-hov: rgba(255,255,255,0.07);
+  --glass:       rgba(255,255,255,0.05);
+  --glass-hov:   rgba(255,255,255,0.09);
+  --border:      rgba(255,255,255,0.08);
+  --border-hov:  rgba(255,255,255,0.16);
+  --text:        #F0F0F8;
+  --text2:       #8A8EA8;
+  --text3:       #4A4D65;
+  --neon-v:      #A78BFA;   /* violeta */
+  --neon-p:      #F472B6;   /* rosa/magenta */
+  --neon-c:      #22D3EE;   /* cyan */
+  --neon-g:      #34D399;   /* verde neon */
+  --neon-o:      #FB923C;   /* naranja */
+  --grad-v:      linear-gradient(135deg,#7C3AED,#A78BFA);
+  --grad-p:      linear-gradient(135deg,#BE185D,#F472B6);
+  --grad-c:      linear-gradient(135deg,#0891B2,#22D3EE);
+  --grad-g:      linear-gradient(135deg,#059669,#34D399);
+  --danger:      #F87171;
+  --danger-bg:   rgba(248,113,113,0.12);
+  --warn:        #FBBF24;
+  --warn-bg:     rgba(251,191,36,0.12);
+  --ok:          #34D399;
+  --ok-bg:       rgba(52,211,153,0.12);
+  --info:        #22D3EE;
+  --info-bg:     rgba(34,211,238,0.12);
+  --radius:      12px;
+  --radius-lg:   18px;
+  --radius-xl:   24px;
+  --shadow:      0 8px 32px rgba(0,0,0,0.4);
+  --shadow-neon: 0 0 30px rgba(167,139,250,0.15);
+  --sidebar-w:   240px;
+}
+[data-theme="light"]{
+  --bg:          #F0F2FA;
+  --bg2:         #E8EAF6;
+  --surface:     rgba(255,255,255,0.85);
+  --surface-hov: rgba(255,255,255,0.95);
+  --glass:       rgba(255,255,255,0.7);
+  --glass-hov:   rgba(255,255,255,0.9);
+  --border:      rgba(0,0,0,0.08);
+  --border-hov:  rgba(0,0,0,0.15);
+  --text:        #12142A;
+  --text2:       #4A4D70;
+  --text3:       #9093B5;
+  --neon-v:      #7C3AED;
+  --neon-p:      #BE185D;
+  --neon-c:      #0891B2;
+  --neon-g:      #059669;
+  --neon-o:      #EA580C;
+  --shadow:      0 8px 32px rgba(0,0,0,0.10);
+  --shadow-neon: 0 0 20px rgba(124,58,237,0.10);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  font-size:14px;
+  transition:background 0.3s,color 0.3s;
+}
+[data-theme="dark"] body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(124,58,237,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 80% 80%, rgba(34,211,238,0.08) 0%, transparent 60%);
+  pointer-events:none;z-index:0;
+}
+
+/* ============================================================ SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border-hov);border-radius:2px;}
+
+/* ============================================================ LOGIN */
+#login-screen{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;position:relative;z-index:1;
+}
+[data-theme="dark"] #login-screen::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 40%, rgba(124,58,237,0.18) 0%, transparent 70%);
+}
+.login-box{
+  background:var(--glass);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border:1px solid var(--border-hov);
+  border-radius:var(--radius-xl);
+  padding:2.5rem 2rem;
+  width:100%;max-width:380px;
+  text-align:center;
+  box-shadow:var(--shadow),var(--shadow-neon);
+  position:relative;z-index:1;
+}
+.login-logo{
+  font-family:'Syne',sans-serif;
+  font-size:28px;font-weight:800;
+  letter-spacing:-0.04em;
+  background:linear-gradient(135deg,var(--neon-v),var(--neon-p));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:4px;
+}
+.login-sub{font-size:12px;color:var(--text2);margin-bottom:1.75rem;letter-spacing:0.08em;text-transform:uppercase;}
+.login-box .field{text-align:left;margin-bottom:14px;}
+.login-box .field label{font-size:11px;font-weight:500;color:var(--text2);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em;}
+#login-error{color:var(--danger);font-size:12px;margin-top:10px;min-height:18px;}
+
+/* ============================================================ APP LAYOUT */
+.app{display:flex;min-height:100vh;position:relative;z-index:1;}
+
+/* ---- SIDEBAR ---- */
+.sidebar{
+  width:var(--sidebar-w);
+  background:var(--glass);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-right:1px solid var(--border);
+  padding:1.5rem 1rem;
+  display:flex;flex-direction:column;gap:3px;
+  position:fixed;top:0;left:0;height:100vh;
+  z-index:100;overflow-y:auto;
+  transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.sidebar-logo{
+  font-family:'Syne',sans-serif;
+  font-size:20px;font-weight:800;letter-spacing:-0.04em;
+  padding:0 0.5rem 1.25rem;
+  border-bottom:1px solid var(--border);
+  margin-bottom:0.75rem;
+  background:linear-gradient(135deg,var(--neon-v),var(--neon-p));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.user-pill{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 12px;
+  margin-bottom:8px;
+  display:flex;align-items:center;gap:10px;
+}
+.user-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--grad-v);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:#fff;flex-shrink:0;
+  font-family:'Syne',sans-serif;
+}
+.user-info strong{font-size:13px;font-weight:600;display:block;color:var(--text);}
+.user-info span{font-size:11px;color:var(--text2);}
+.nav-section{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;padding:12px 12px 4px;}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:10px;
+  font-size:13px;color:var(--text2);
+  cursor:pointer;transition:all 0.15s;
+  border:none;background:none;width:100%;text-align:left;
+  font-family:'DM Sans',sans-serif;
+}
+.nav-item:hover{background:var(--surface-hov);color:var(--text);}
+.nav-item.active{
+  background:linear-gradient(135deg,rgba(124,58,237,0.25),rgba(167,139,250,0.15));
+  color:var(--neon-v);
+  border:1px solid rgba(167,139,250,0.2);
+}
+.nav-item i{font-size:17px;flex-shrink:0;}
+.nav-logout{color:var(--danger)!important;margin-top:auto;}
+.nav-logout:hover{background:var(--danger-bg)!important;}
+
+/* ---- MAIN ---- */
+.main{margin-left:var(--sidebar-w);padding:2rem;flex:1;max-width:1200px;}
+
+/* ---- TOPBAR ---- */
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:1.75rem;flex-wrap:wrap;gap:12px;
+}
+.topbar-left h1{
+  font-family:'Syne',sans-serif;
+  font-size:24px;font-weight:700;letter-spacing:-0.03em;
+  color:var(--text);
+}
+.topbar-left p{font-size:12px;color:var(--text2);margin-top:2px;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+
+/* Sync indicator */
+.sync-wrap{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);padding:6px 12px;background:var(--glass);border:1px solid var(--border);border-radius:20px;}
+.sync-dot{width:6px;height:6px;border-radius:50%;}
+.sync-dot.ok{background:var(--ok);}
+.sync-dot.syncing{background:var(--warn);animation:pulse 1s infinite;}
+.sync-dot.error{background:var(--danger);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* Theme toggle */
+.theme-toggle{
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:20px;padding:6px 12px;cursor:pointer;
+  font-size:14px;display:flex;align-items:center;gap:6px;
+  color:var(--text2);transition:all 0.15s;
+}
+.theme-toggle:hover{border-color:var(--border-hov);color:var(--text);}
+
+/* Hamburger */
+.hamburger{display:none;background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:8px;cursor:pointer;color:var(--text);}
+.hamburger i{font-size:20px;}
+
+/* ---- SECTIONS ---- */
+.section{display:none;}
+.section.active{display:block;}
+
+/* ============================================================ CARDS & GLASS */
+.card{
+  background:var(--glass);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:1.25rem;
+  margin-bottom:1rem;
+  transition:border-color 0.2s,box-shadow 0.2s;
+}
+.card:hover{border-color:var(--border-hov);}
+.stitle{
+  font-size:10px;font-weight:600;color:var(--text3);
+  text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.9rem;
+}
+
+/* ============================================================ GRIDS */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1rem;}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:1rem;}
+.grid-charts{display:grid;grid-template-columns:1.6fr 1fr;gap:1rem;margin-bottom:1rem;}
+.grid-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.grid-form3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+@media(max-width:700px){
+  .grid-form,.grid-form3{grid-template-columns:1fr;}
+  .grid-charts{grid-template-columns:1fr;}
+}
+
+/* ============================================================ METRIC CARDS */
+.metric{
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1rem;
+  transition:all 0.2s;
+  position:relative;overflow:hidden;
+}
+.metric::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  opacity:0;transition:opacity 0.2s;
+}
+.metric.neon-v::before{background:var(--grad-v);opacity:1;}
+.metric.neon-p::before{background:var(--grad-p);opacity:1;}
+.metric.neon-c::before{background:var(--grad-c);opacity:1;}
+.metric.neon-g::before{background:var(--grad-g);opacity:1;}
+.metric:hover{border-color:var(--border-hov);transform:translateY(-2px);box-shadow:var(--shadow);}
+.metric .lbl{font-size:10px;color:var(--text2);margin-bottom:8px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;}
+.metric .val{font-size:20px;font-weight:700;letter-spacing:-0.02em;font-family:'Syne',sans-serif;color:var(--text);}
+.metric .val.g{color:var(--ok);}
+.metric .val.r{color:var(--danger);}
+.metric .val.y{color:var(--warn);}
+.metric .val.v{color:var(--neon-v);}
+.metric .val.c{color:var(--neon-c);}
+.metric .sub{font-size:11px;color:var(--text3);margin-top:4px;}
+
+/* ============================================================ CHART CARDS */
+.chart-card{
+  background:var(--glass);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:1.25rem;
+  margin-bottom:1rem;
+}
+.chart-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;}
+.chart-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);}
+.chart-sub{font-size:11px;color:var(--text2);margin-top:2px;}
+.chart-wrap{position:relative;height:220px;}
+
+/* ============================================================ PRODUCT CARDS */
+.pcard{
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:1rem;
+  transition:all 0.25s cubic-bezier(0.4,0,0.2,1);
+  position:relative;overflow:hidden;
+}
+.pcard::after{
+  content:'';position:absolute;inset:0;border-radius:var(--radius-lg);
+  background:linear-gradient(135deg,rgba(167,139,250,0.06),transparent);
+  opacity:0;transition:opacity 0.25s;
+}
+.pcard:hover{
+  transform:translateY(-4px) scale(1.01);
+  border-color:rgba(167,139,250,0.3);
+  box-shadow:0 12px 40px rgba(167,139,250,0.15);
+}
+.pcard:hover::after{opacity:1;}
+.pcard .pname{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin:8px 0 10px;color:var(--text);}
+.prow{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);padding:5px 0;border-bottom:1px solid var(--border);}
+.prow:last-of-type{border-bottom:none;}
+.prow span:last-child{font-weight:500;color:var(--text);font-family:'DM Mono',monospace;}
+
+/* ============================================================ ASESOR CARDS */
+.asesor-card{
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:1.25rem;
+  transition:all 0.25s cubic-bezier(0.4,0,0.2,1);
+  cursor:default;
+}
+.asesor-card:hover{
+  transform:translateY(-5px);
+  border-color:var(--neon-c);
+  box-shadow:0 8px 32px rgba(34,211,238,0.15),0 0 0 1px rgba(34,211,238,0.1);
+}
+.asesor-avatar{
+  width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff;
+  margin-bottom:10px;
+}
+.asesor-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px;}
+
+/* ============================================================ BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;letter-spacing:0.04em;text-transform:uppercase;}
+.badge.g{background:var(--ok-bg);color:var(--ok);border:1px solid rgba(52,211,153,0.2);}
+.badge.y{background:var(--warn-bg);color:var(--warn);border:1px solid rgba(251,191,36,0.2);}
+.badge.r{background:var(--danger-bg);color:var(--danger);border:1px solid rgba(248,113,113,0.2);}
+.badge.b{background:var(--info-bg);color:var(--info);border:1px solid rgba(34,211,238,0.2);}
+.badge.v{background:rgba(167,139,250,0.12);color:var(--neon-v);border:1px solid rgba(167,139,250,0.2);}
+.badge.gray{background:var(--surface);color:var(--text2);border:1px solid var(--border);}
+
+/* ============================================================ ALERTS */
+.alert{
+  border-radius:var(--radius);padding:0.9rem 1rem;
+  font-size:12px;line-height:1.6;margin-bottom:8px;
+  display:flex;gap:10px;align-items:flex-start;
+  border-left:3px solid;
+}
+.alert i{margin-top:1px;flex-shrink:0;font-size:15px;}
+.alert.r{background:var(--danger-bg);color:var(--danger);border-color:var(--danger);}
+.alert.y{background:var(--warn-bg);color:var(--warn);border-color:var(--warn);}
+.alert.g{background:var(--ok-bg);color:var(--ok);border-color:var(--ok);}
+.alert.b{background:var(--info-bg);color:var(--info);border-color:var(--info);}
+
+/* ============================================================ FORMS */
+.field{margin-bottom:14px;}
+.field label{font-size:10px;font-weight:600;color:var(--text2);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em;}
+input[type=text],input[type=number],input[type=date],input[type=month],input[type=password],select,textarea{
+  width:100%;padding:10px 14px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  font-size:13px;font-family:'DM Sans',sans-serif;
+  background:var(--glass);
+  color:var(--text);
+  transition:border-color 0.15s,box-shadow 0.15s;outline:none;
+  backdrop-filter:blur(8px);
+}
+input:focus,select:focus{
+  border-color:var(--neon-v);
+  box-shadow:0 0 0 3px rgba(167,139,250,0.12);
+}
+select option{background:#1A1C2E;color:var(--text);}
+
+/* ============================================================ BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 18px;border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--glass);color:var(--text);
+  font-size:12px;font-weight:500;cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  transition:all 0.15s;letter-spacing:0.02em;
+  backdrop-filter:blur(8px);
+}
+.btn:hover{background:var(--glass-hov);border-color:var(--border-hov);}
+.btn.primary{
+  background:linear-gradient(135deg,#7C3AED,#A78BFA);
+  color:#fff;border-color:transparent;
+  box-shadow:0 4px 16px rgba(124,58,237,0.35);
+}
+.btn.primary:hover{
+  box-shadow:0 6px 24px rgba(124,58,237,0.5);
+  transform:translateY(-1px);
+}
+.btn.sm{padding:5px 12px;font-size:11px;}
+.btn.danger{background:var(--danger-bg);color:var(--danger);border-color:rgba(248,113,113,0.25);}
+.btn.danger:hover{background:rgba(248,113,113,0.2);}
+.btn.edit{background:var(--info-bg);color:var(--info);border-color:rgba(34,211,238,0.25);}
+.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important;}
+
+/* ============================================================ DATE FILTER */
+.date-filter{
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:var(--radius);padding:10px 16px;
+  margin-bottom:1.25rem;
+}
+.date-filter label{font-size:11px;color:var(--text2);font-weight:500;}
+.date-filter input,.date-filter select{width:auto;font-size:12px;padding:6px 10px;}
+
+/* ============================================================ TABLE */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{
+  text-align:left;padding:8px 10px;
+  font-size:10px;font-weight:600;color:var(--text3);
+  text-transform:uppercase;letter-spacing:0.08em;
+  border-bottom:1px solid var(--border);
+}
+td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--surface-hov);}
+td .mono{font-family:'DM Mono',monospace;}
+
+/* ============================================================ MODAL */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.65);
+  backdrop-filter:blur(6px);
+  z-index:200;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity 0.2s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{
+  background:var(--bg2);
+  border:1px solid var(--border-hov);
+  border-radius:var(--radius-xl);
+  padding:1.75rem;
+  width:90%;max-width:580px;max-height:90vh;overflow-y:auto;
+  box-shadow:var(--shadow);
+}
+.modal h3{
+  font-family:'Syne',sans-serif;
+  font-size:16px;font-weight:700;margin-bottom:1.25rem;color:var(--text);
+}
+
+/* ============================================================ SIDEBAR OVERLAY (mobile) */
+.sidebar-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(4px);z-index:99;
+}
+
+/* ============================================================ TOAST */
+#toast{
+  position:fixed;bottom:24px;right:24px;
+  background:linear-gradient(135deg,#7C3AED,#A78BFA);
+  color:#fff;padding:10px 20px;border-radius:12px;
+  font-size:12px;font-weight:500;
+  opacity:0;transition:opacity 0.2s;
+  pointer-events:none;z-index:999;
+  box-shadow:0 8px 24px rgba(124,58,237,0.4);
+}
+#toast.show{opacity:1;}
+
+/* ============================================================ PROGRESS BAR */
+.prog-wrap{margin-top:8px;}
+.prog-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:2px;transition:width 0.5s;}
+
+/* ============================================================ MOBILE */
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .sidebar-overlay{display:block;}
+  .main{margin-left:0;padding:1rem;}
+  .hamburger{display:flex;}
+  .grid-charts{grid-template-columns:1fr;}
+}
+@media(max-width:500px){
+  .grid4,.grid2{grid-template-columns:1fr 1fr;}
+  .topbar-left h1{font-size:18px;}
+}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()" style="display:none;"></div>
+
+<!-- ===================================================== LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Natural Core</div>
+    <div class="login-sub">Sistema de control operativo</div>
+    <div class="field">
+      <label>Usuario</label>
+      <input type="text" id="login-user" placeholder="Ej: Suki1" autocomplete="username">
+    </div>
+    <div class="field">
+      <label>Clave</label>
+      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn primary" style="width:100%;justify-content:center;font-size:14px;padding:11px;" onclick="hacerLogin()">
+      <i class="ti ti-login"></i> Ingresar
+    </button>
+    <div id="login-error"></div>
+  </div>
+</div>
+
+<!-- ===================================================== MODAL EDITAR -->
+<div class="modal-overlay" id="modal-edit">
+  <div class="modal">
+    <h3><i class="ti ti-edit" style="margin-right:8px;color:var(--neon-c);"></i>Editar registro</h3>
+    <input type="hidden" id="edit-id">
+    <div class="grid-form">
+      <div class="field"><label>Fecha</label><input type="date" id="edit-fecha"></div>
+      <div class="field"><label>Producto</label><select id="edit-producto"></select></div>
+    </div>
+    <div class="grid-form3">
+      <div class="field"><label>Ads ($)</label><input type="number" id="edit-ads"></div>
+      <div class="field"><label>Ventas</label><input type="number" id="edit-ventas"></div>
+      <div class="field"><label>Confirmados</label><input type="number" id="edit-confirmados"></div>
+    </div>
+    <div class="grid-form3">
+      <div class="field"><label>Cancelados</label><input type="number" id="edit-cancelados"></div>
+      <div class="field"><label>Devoluciones</label><input type="number" id="edit-devoluciones"></div>
+      <div class="field"><label>Por confirmar</label><input type="number" id="edit-porconfirmar"></div>
+    </div>
+    <div class="field">
+      <label>Causa de devolución</label>
+      <select id="edit-causa">
+        <option value="">— Sin devoluciones —</option>
+        <option>No tenía dinero</option><option>Dirección errada</option>
+        <option>Cliente no contestó</option><option>Producto no era lo esperado</option>
+        <option>Se arrepintió</option><option>Problema con transportadora</option>
+        <option>Otra causa</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;">
+      <button class="btn" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn primary" id="btn-save-edit" onclick="guardarEdicion()"><i class="ti ti-check"></i> Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================== APP -->
+<div class="app" id="app-screen" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">Natural Core</div>
+    <div class="user-pill">
+      <div class="user-avatar" id="sb-avatar">—</div>
+      <div class="user-info">
+        <strong id="sb-nombre">—</strong>
+        <span id="sb-rol">—</span>
+      </div>
+    </div>
+
+    <div class="nav-section">Menú</div>
+    <div id="nav-admin" style="display:none;">
+      <button class="nav-item active" onclick="showTab('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</button>
+      <button class="nav-item" onclick="showTab('registro',this)"><i class="ti ti-circle-plus"></i> Registrar día</button>
+      <button class="nav-item" onclick="showTab('productos',this)"><i class="ti ti-package"></i> Productos</button>
+      <button class="nav-item" onclick="showTab('historial',this)"><i class="ti ti-table"></i> Historial</button>
+      <button class="nav-item" onclick="showTab('gastos',this)"><i class="ti ti-receipt"></i> Gastos fijos</button>
+    </div>
+    <div id="nav-asesor" style="display:none;">
+      <button class="nav-item active" onclick="showTab('registro',this)"><i class="ti ti-circle-plus"></i> Registrar día</button>
+      <button class="nav-item" onclick="showTab('historial',this)"><i class="ti ti-table"></i> Mi historial</button>
+    </div>
+
+    <button class="nav-item nav-logout" onclick="cerrarSesion()" style="margin-top:auto;">
+      <i class="ti ti-logout"></i> Cerrar sesión
+    </button>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="hamburger" onclick="openSidebar()"><i class="ti ti-menu-2"></i></button>
+        <div class="topbar-left">
+          <h1 id="topbar-title">Dashboard</h1>
+          <p id="topbar-sub">Bienvenido de vuelta</p>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="sync-wrap">
+          <span class="sync-dot syncing" id="sync-dot"></span>
+          <span id="sync-label">Cargando</span>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <i class="ti ti-sun" id="theme-icon"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== DASHBOARD ===== -->
+    <div id="tab-dashboard" class="section active">
+
+      <!-- Filtro fechas -->
+      <div class="date-filter">
+        <i class="ti ti-calendar-stats" style="color:var(--neon-v);"></i>
+        <label>Desde</label>
+        <input type="date" id="dash-desde" onchange="renderDashboard()">
+        <label>Hasta</label>
+        <input type="date" id="dash-hasta" onchange="renderDashboard()">
+        <button class="btn sm" onclick="resetFiltroFecha()"><i class="ti ti-refresh"></i> Mes actual</button>
+      </div>
+
+      <!-- Métricas principales -->
+      <div class="grid4" id="dash-metrics"></div>
+
+      <!-- Gráficas -->
+      <div class="grid-charts">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">📈 CPV diario por producto</div>
+              <div class="chart-sub">Tendencia — escalar si baja, pausar si sube</div>
+            </div>
+            <select id="cpv-filtro-prod" onchange="renderChartCPV()" style="width:auto;font-size:11px;padding:5px 8px;">
+              <option value="">Todos</option>
+            </select>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-cpv"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">🎯 Proyección del mes</div>
+              <div class="chart-sub">Basado en los últimos 7 días</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-proy"></canvas></div>
+          <div id="proy-datos" style="margin-top:12px;"></div>
+        </div>
+      </div>
+
+      <!-- Alertas -->
+      <div class="card">
+        <div class="stitle">⚡ Alertas del sistema</div>
+        <div id="dash-alertas"></div>
+      </div>
+
+      <!-- Semáforo productos -->
+      <div class="card">
+        <div class="stitle">🚦 Semáforo por producto</div>
+        <div id="dash-productos"></div>
+      </div>
+
+      <!-- Asesores -->
+      <div class="card" id="card-asesores">
+        <div class="stitle">👥 Rendimiento por asesor</div>
+        <div id="dash-asesores" class="grid3"></div>
+      </div>
+
+    </div>
+
+    <!-- ===== REGISTRO ===== -->
+    <div id="tab-registro" class="section">
+      <div class="card">
+        <div class="stitle">Datos del día</div>
+        <div class="grid-form">
+          <div class="field"><label>Fecha</label><input type="date" id="reg-fecha"></div>
+          <div class="field"><label>Producto</label><select id="reg-producto"></select></div>
+        </div>
+        <div class="grid-form3">
+          <div class="field"><label>Inversión ads ($)</label><input type="number" id="reg-ads" placeholder="0"></div>
+          <div class="field"><label>Ventas totales</label><input type="number" id="reg-ventas" placeholder="0"></div>
+          <div class="field"><label>Confirmados — salen hoy</label><input type="number" id="reg-confirmados" placeholder="0"></div>
+        </div>
+        <div class="grid-form3">
+          <div class="field"><label>Cancelados — no despachados</label><input type="number" id="reg-cancelados" placeholder="0"></div>
+          <div class="field"><label>Devoluciones — ya devueltos</label><input type="number" id="reg-devoluciones" placeholder="0"></div>
+          <div class="field"><label>Por confirmar — en WhatsApp</label><input type="number" id="reg-porconfirmar" placeholder="0"></div>
+        </div>
+        <div class="field">
+          <label>Causa de devolución <span style="color:var(--text3)">(si aplica)</span></label>
+          <select id="reg-causa">
+            <option value="">— Sin devoluciones —</option>
+            <option>No tenía dinero</option><option>Dirección errada</option>
+            <option>Cliente no contestó</option><option>Producto no era lo esperado</option>
+            <option>Se arrepintió</option><option>Problema con transportadora</option>
+            <option>Otra causa</option>
+          </select>
+        </div>
+        <button class="btn primary" id="btn-guardar-reg" onclick="guardarRegistro()">
+          <i class="ti ti-check"></i> Guardar registro
+        </button>
+      </div>
+      <div class="card">
+        <div class="stitle">Guía de estados</div>
+        <div style="font-size:12px;color:var(--text2);line-height:2;">
+          <p><span style="color:var(--neon-g);font-weight:600;">Confirmados</span> — pedidos que salen hoy de bodega.</p>
+          <p><span style="color:var(--danger);font-weight:600;">Cancelados</span> — clientes que se arrepintieron antes del despacho.</p>
+          <p><span style="color:var(--warn);font-weight:600;">Por confirmar</span> — clientes en espera de respuesta en WhatsApp.</p>
+          <p><span style="color:var(--neon-p);font-weight:600;">Devoluciones</span> — paquetes que la transportadora ya devolvió. Si llegan días después, edita el registro original en el Historial.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PRODUCTOS ===== -->
+    <div id="tab-productos" class="section">
+      <div class="card">
+        <div class="stitle">Agregar producto</div>
+        <div class="grid-form">
+          <div class="field"><label>Nombre</label><input type="text" id="prod-nombre" placeholder="Ej: NAD+"></div>
+          <div class="field"><label>Ganancia bruta / venta ($)</label><input type="number" id="prod-ganancia" placeholder="40000"></div>
+        </div>
+        <div class="grid-form">
+          <div class="field"><label>Costo devolución ($)</label><input type="number" id="prod-devolucion" placeholder="22000"></div>
+          <div class="field"><label>CPV máximo aceptable ($)</label><input type="number" id="prod-cpvmax" placeholder="30000"></div>
+        </div>
+        <button class="btn primary" onclick="guardarProducto()"><i class="ti ti-plus"></i> Agregar</button>
+      </div>
+      <div id="lista-productos" style="margin-top:1rem;"></div>
+    </div>
+
+    <!-- ===== HISTORIAL ===== -->
+    <div id="tab-historial" class="section">
+      <div class="alert b" style="margin-bottom:1rem;">
+        <i class="ti ti-info-circle"></i>
+        <span><strong>¿Llegó una devolución después?</strong> Usa ✏️ en el registro del día original para actualizar y registrar la causa.</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;">
+        <select id="hist-filtro-prod" onchange="renderHistorial()" style="width:auto;font-size:12px;"></select>
+        <select id="hist-filtro-mes" onchange="renderHistorial()" style="width:auto;font-size:12px;"></select>
+      </div>
+      <div class="card tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>Fecha</th><th>Asesor</th><th>Producto</th><th>Ads</th>
+            <th>Ventas</th><th>Confirm.</th><th>Cancel.</th><th>Devol.</th>
+            <th>Causa</th><th>CPV</th><th>Neto</th><th></th>
+          </tr></thead>
+          <tbody id="hist-body"></tbody>
+        </table>
+      </div>
+      <div class="grid4" id="hist-resumen" style="margin-top:1rem;"></div>
+    </div>
+
+    <!-- ===== GASTOS ===== -->
+    <div id="tab-gastos" class="section">
+      <div class="card">
+        <div class="stitle">Mes a configurar</div>
+        <div class="field" style="max-width:200px;">
+          <label>Mes / Año</label>
+          <input type="month" id="gf-mes" onchange="cargarGastosMes()">
+        </div>
+      </div>
+      <div class="card">
+        <div class="stitle">Valores del mes</div>
+        <div class="grid-form">
+          <div class="field"><label>Equipo / personal ($)</label><input type="number" id="gf-equipo" placeholder="1700000"></div>
+          <div class="field"><label>Herramientas ($)</label><input type="number" id="gf-herramientas" placeholder="1217091"></div>
+        </div>
+        <div class="grid-form">
+          <div class="field"><label>Retiro personal ($)</label><input type="number" id="gf-personal" placeholder="2500000"></div>
+          <div class="field"><label>Otros ($)</label><input type="number" id="gf-otros" placeholder="0"></div>
+        </div>
+        <button class="btn primary" onclick="guardarGastos()"><i class="ti ti-check"></i> Guardar gastos del mes</button>
+      </div>
+      <div id="gastos-resumen" style="margin-top:1rem;"></div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxalWe4TIdz5VJfpZUvsFtr-41ZjVOQ89AH4AdAZdzB5GAmR_4uXP5WO-aMz-OA6OO5/exec';
+
+// ============================================================
+// ESTADO
+// ============================================================
+let session = null;
+let data = { registros:[], productos:[], gastos:{}, asesores:[] };
+let chartCPV = null;
+let chartProy = null;
+
+// ============================================================
+// TEMA
+// ============================================================
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('theme-icon').className = isDark ? 'ti ti-moon' : 'ti ti-sun';
+  // Actualizar colores de Chart.js
+  if (chartCPV) { chartCPV.destroy(); chartCPV = null; }
+  if (chartProy) { chartProy.destroy(); chartProy = null; }
+  renderDashboard();
+}
+
+// ============================================================
+// SIDEBAR MOBILE
+// ============================================================
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sidebar-overlay').style.display = 'block';
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').style.display = 'none';
+}
+
+// ============================================================
+// LOGIN
+// ============================================================
+function hacerLogin() {
+  const usuario = document.getElementById('login-user').value.trim();
+  const clave   = document.getElementById('login-pass').value.trim();
+  const errEl   = document.getElementById('login-error');
+  errEl.textContent = '';
+  if (!usuario || !clave) { errEl.textContent = 'Completa usuario y clave.'; return; }
+  api('login', null, usuario, clave)
+    .then(d => { session = d; iniciarApp(); })
+    .catch(err => { errEl.textContent = err.message; });
+}
+
+function iniciarApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display   = 'flex';
+  const ini = session.nombre.charAt(0).toUpperCase();
+  document.getElementById('sb-avatar').textContent = ini;
+  document.getElementById('sb-nombre').textContent = session.nombre;
+  document.getElementById('sb-rol').textContent    = session.rol === 'admin' ? 'Administrador' : 'Asesor';
+  document.getElementById('topbar-sub').textContent = 'Bienvenido, ' + session.nombre;
+  if (session.rol === 'admin') {
+    document.getElementById('nav-admin').style.display = 'block';
+    showTab('dashboard');
+  } else {
+    document.getElementById('nav-asesor').style.display = 'block';
+    document.getElementById('card-asesores').style.display = 'none';
+    showTab('registro');
+  }
+  cargarTodo();
+}
+
+function cerrarSesion() {
+  session = null;
+  data = { registros:[], productos:[], gastos:{}, asesores:[] };
+  document.getElementById('app-screen').style.display   = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('login-error').textContent = '';
+  document.getElementById('nav-admin').style.display  = 'none';
+  document.getElementById('nav-asesor').style.display = 'none';
+  if (chartCPV) { chartCPV.destroy(); chartCPV = null; }
+  if (chartProy) { chartProy.destroy(); chartProy = null; }
+}
+
+document.getElementById('login-pass').addEventListener('keydown', e => { if(e.key==='Enter') hacerLogin(); });
+
+// ============================================================
+// API
+// ============================================================
+function api(action, payload, usuario, clave) {
+  const u = usuario || (session ? session.usuario : '');
+  const params = new URLSearchParams({ action, usuario: u });
+  if (clave)   params.set('clave', clave);
+  if (payload) params.set('data', JSON.stringify(payload));
+  setSyncState('syncing');
+  return fetch(SCRIPT_URL + '?' + params.toString())
+    .then(r => r.json())
+    .then(res => { if (!res.ok) throw new Error(res.error||'Error'); setSyncState('ok'); return res.data; })
+    .catch(err => { setSyncState('error'); throw err; });
+}
+function apiId(action, id) {
+  setSyncState('syncing');
+  return fetch(SCRIPT_URL + '?action=' + action + '&id=' + id + '&usuario=' + (session?session.usuario:''))
+    .then(r => r.json())
+    .then(res => { if (!res.ok) throw new Error(res.error||'Error'); setSyncState('ok'); return res.data; })
+    .catch(err => { setSyncState('error'); throw err; });
+}
+function setSyncState(s) {
+  const dot = document.getElementById('sync-dot');
+  const lbl = document.getElementById('sync-label');
+  if (!dot||!lbl) return;
+  dot.className = 'sync-dot ' + s;
+  lbl.textContent = s==='ok'?'Sincronizado':s==='syncing'?'Sincronizando…':'Error';
+}
+
+// ============================================================
+// CARGAR TODO
+// ============================================================
+function cargarTodo() {
+  api('loadAll').then(d => {
+    data = d;
+    if (session.rol === 'admin') { resetFiltroFecha(); renderProductos(); }
+    renderHistorial(); initRegistro();
+  }).catch(err => toast('Error al cargar: ' + err.message));
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function fmt(n)  { return Math.round(n).toLocaleString('es-CO'); }
+function fmtM(n) { return '$' + fmt(n); }
+function hoyStr(){ return new Date().toISOString().split('T')[0]; }
+function cpvZona(cpv, ganancia) {
+  if (cpv === 0) return 'g';
+  if (cpv <= ganancia * 0.5) return 'g';
+  if (cpv <= ganancia * 0.8) return 'y';
+  return 'r';
+}
+function cpvLabel(cpv, ganancia) {
+  if (cpv === 0) return 'Sin ads';
+  const z = cpvZona(cpv, ganancia);
+  return z==='g'?'Verde ✓':z==='y'?'Amarillo':'Rojo ⚠';
+}
+function calcNeto(confirmados, ads, devoluciones, prod) {
+  const ganancia_bruta = confirmados * prod.ganancia;
+  const costo_dev      = devoluciones * prod.devolucion;
+  const neto           = ganancia_bruta - ads - costo_dev;
+  const cpv            = confirmados > 0 && ads > 0 ? Math.round(ads/confirmados) : 0;
+  return { ganancia_bruta, costo_dev, neto, cpv };
+}
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
+}
+function setBtn(id, loading) {
+  const b = document.getElementById(id);
+  if (b) b.disabled = loading;
+}
+function isDark() { return document.documentElement.getAttribute('data-theme') === 'dark'; }
+function chartTextColor() { return isDark() ? '#8A8EA8' : '#4A4D70'; }
+function chartGridColor() { return isDark() ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)'; }
+
+// ============================================================
+// NAVEGACIÓN
+// ============================================================
+const tabTitles = { dashboard:'Dashboard', registro:'Registrar día', productos:'Productos', historial:'Historial', gastos:'Gastos fijos' };
+function showTab(t, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  const sec = document.getElementById('tab-' + t);
+  if (sec) sec.classList.add('active');
+  if (btn) btn.classList.add('active');
+  document.getElementById('topbar-title').textContent = tabTitles[t] || t;
+  if (t==='dashboard') renderDashboard();
+  if (t==='historial') renderHistorial();
+  if (t==='productos') renderProductos();
+  if (t==='gastos')    renderGastos();
+  if (t==='registro')  initRegistro();
+  closeSidebar();
+}
+
+// ============================================================
+// FILTRO FECHAS
+// ============================================================
+function resetFiltroFecha() {
+  const hoy = hoyStr();
+  document.getElementById('dash-desde').value = hoy.substring(0,7) + '-01';
+  document.getElementById('dash-hasta').value = hoy;
+  renderDashboard();
+}
+function registrosFiltrados() {
+  const desde = document.getElementById('dash-desde')?.value || '';
+  const hasta = document.getElementById('dash-hasta')?.value || '';
+  return data.registros.filter(r => {
+    if (desde && r.fecha < desde) return false;
+    if (hasta && r.fecha > hasta) return false;
+    return true;
+  });
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard() {
+  if (session?.rol !== 'admin') return;
+  const regs   = registrosFiltrados();
+  const gastos = data.gastos;
+
+  const tAds    = regs.reduce((a,r)=>a+r.ads,0);
+  const tVentas = regs.reduce((a,r)=>a+r.ventas,0);
+  const tConf   = regs.reduce((a,r)=>a+r.confirmados,0);
+  const tCancel = regs.reduce((a,r)=>a+r.cancelados,0);
+  const tDev    = regs.reduce((a,r)=>a+r.devoluciones,0);
+  const tBruto  = regs.reduce((a,r)=>a+r.ganancia_bruta,0);
+  const tDevCost= regs.reduce((a,r)=>a+r.costo_dev,0);
+  const gFijos  = (gastos.equipo||0)+(gastos.herramientas||0)+(gastos.personal||0)+(gastos.otros||0);
+  const neto    = tBruto - tAds - tDevCost - gFijos;
+  const tasaCierre = tVentas>0 ? Math.round(tConf/tVentas*100) : 0;
+  const tasaNE     = tVentas>0 ? Math.round((tCancel+tDev)/tVentas*100) : 0;
+  const cpvProm    = tConf>0&&tAds>0 ? Math.round(tAds/tConf) : 0;
+
+  document.getElementById('dash-metrics').innerHTML = `
+    <div class="metric neon-g"><div class="lbl">Ganancia bruta</div><div class="val g">${fmtM(tBruto)}</div><div class="sub">${tConf} pedidos confirmados</div></div>
+    <div class="metric neon-p"><div class="lbl">Ads invertidos</div><div class="val r">${fmtM(tAds)}</div><div class="sub">Inversión total en Meta Ads</div></div>
+    <div class="metric neon-v"><div class="lbl">Neto real</div><div class="val ${neto>=0?'g':'r'}">${fmtM(neto)}</div><div class="sub">Incluye gastos fijos ${fmtM(gFijos)}</div></div>
+    <div class="metric neon-c"><div class="lbl">CPV promedio</div><div class="val ${cpvProm===0?'':''}"><span style="color:${cpvProm===0?'var(--text3)':cpvProm<=20000?'var(--ok)':cpvProm<=30000?'var(--warn)':'var(--danger)'}">${cpvProm>0?fmtM(cpvProm):'—'}</span></div><div class="sub">Costo por venta confirmada</div></div>
+    <div class="metric"><div class="lbl">Tasa de cierre</div><div class="val ${tasaCierre>=75?'g':'r'}">${tasaCierre}%</div><div class="sub">Meta: &gt;75%</div></div>
+    <div class="metric"><div class="lbl">Ventas totales</div><div class="val v">${tVentas}</div><div class="sub">${tConf} confirm. / ${tCancel} cancel.</div></div>
+    <div class="metric"><div class="lbl">Devoluciones</div><div class="val r">${tDev}</div><div class="sub">Costo: ${fmtM(tDevCost)}</div></div>
+    <div class="metric"><div class="lbl">No entregados</div><div class="val ${tasaNE>25?'r':'y'}">${tasaNE}%</div><div class="sub">Meta: &lt;25%</div></div>
+  `;
+
+  renderChartCPV();
+  renderChartProyeccion(regs);
+  renderAlertas(regs, tVentas, tasaCierre, tasaNE, cpvProm);
+  renderSemaforo(regs);
+  renderAsesores(regs);
+}
+
+// ============================================================
+// GRÁFICA CPV DIARIO
+// ============================================================
+function renderChartCPV() {
+  const regs = registrosFiltrados();
+  const selProd = document.getElementById('cpv-filtro-prod');
+  // Llenar selector de productos
+  const prevVal = selProd.value;
+  selProd.innerHTML = '<option value="">Todos</option>' +
+    data.productos.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+  selProd.value = prevVal;
+
+  const filtProd = selProd.value;
+  const filtRegs = filtProd ? regs.filter(r => String(r.prodId)===filtProd) : regs;
+
+  // Agrupar CPV por fecha
+  const fechas = [...new Set(filtRegs.map(r=>r.fecha))].sort();
+  const cpvPorFecha = fechas.map(f => {
+    const dr = filtRegs.filter(r=>r.fecha===f);
+    const ads  = dr.reduce((a,r)=>a+r.ads,0);
+    const conf = dr.reduce((a,r)=>a+r.confirmados,0);
+    return conf>0&&ads>0 ? Math.round(ads/conf) : null;
+  });
+
+  // Línea de límite máximo (CPV max del producto seleccionado o promedio)
+  let cpvMax = null;
+  if (filtProd) {
+    const prod = data.productos.find(p=>String(p.id)===filtProd);
+    if (prod) cpvMax = prod.cpvmax;
+  }
+
+  const ctx = document.getElementById('chart-cpv').getContext('2d');
+  if (chartCPV) chartCPV.destroy();
+
+  const gradV = ctx.createLinearGradient(0,0,0,220);
+  gradV.addColorStop(0,'rgba(167,139,250,0.35)');
+  gradV.addColorStop(1,'rgba(167,139,250,0)');
+
+  chartCPV = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels: fechas.map(f=>f.substring(5)),
+      datasets:[
+        {
+          label:'CPV ($)',
+          data: cpvPorFecha,
+          borderColor:'#A78BFA',
+          backgroundColor: gradV,
+          borderWidth:2.5,
+          pointBackgroundColor:'#A78BFA',
+          pointRadius:4,
+          pointHoverRadius:7,
+          tension:0.4,
+          fill:true,
+          spanGaps:true,
+        },
+        ...(cpvMax ? [{
+          label:'Límite máximo',
+          data: fechas.map(()=>cpvMax),
+          borderColor:'rgba(248,113,113,0.6)',
+          borderDash:[6,4],
+          borderWidth:1.5,
+          pointRadius:0,
+          fill:false,
+        }] : [])
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{labels:{color:chartTextColor(),font:{size:11},boxWidth:12}},
+        tooltip:{
+          backgroundColor:'rgba(15,17,32,0.95)',
+          borderColor:'rgba(167,139,250,0.3)',
+          borderWidth:1,
+          titleColor:'#F0F0F8',
+          bodyColor:'#8A8EA8',
+          callbacks:{label:ctx=>' '+ctx.dataset.label+': $'+Math.round(ctx.raw||0).toLocaleString('es-CO')}
+        }
+      },
+      scales:{
+        x:{grid:{color:chartGridColor()},ticks:{color:chartTextColor(),font:{size:10}}},
+        y:{grid:{color:chartGridColor()},ticks:{color:chartTextColor(),font:{size:10},callback:v=>'$'+Math.round(v/1000)+'k'}}
+      }
+    }
+  });
+}
+
+// ============================================================
+// GRÁFICA PROYECCIÓN DEL MES
+// ============================================================
+function renderChartProyeccion(regs) {
+  // Neto diario de los últimos 7 días
+  const hoy = hoyStr();
+  const dias7 = [];
+  for (let i=6;i>=0;i--) {
+    const d = new Date(); d.setDate(d.getDate()-i);
+    dias7.push(d.toISOString().split('T')[0]);
+  }
+  const netoDiario = dias7.map(f => {
+    const dr = regs.filter(r=>r.fecha===f);
+    return dr.reduce((a,r)=>a+r.neto,0);
+  });
+
+  const promDiario = netoDiario.reduce((a,v)=>a+v,0) / 7;
+  const diasMes = new Date(new Date().getFullYear(), new Date().getMonth()+1,0).getDate();
+  const proyeccionMes = promDiario * diasMes;
+  const netoAcumulado = regs.reduce((a,r)=>a+r.neto,0);
+
+  const ctx2 = document.getElementById('chart-proy').getContext('2d');
+  if (chartProy) chartProy.destroy();
+
+  const gradG = ctx2.createLinearGradient(0,0,0,180);
+  gradG.addColorStop(0,'rgba(52,211,153,0.3)');
+  gradG.addColorStop(1,'rgba(52,211,153,0)');
+
+  chartProy = new Chart(ctx2, {
+    type:'bar',
+    data:{
+      labels: dias7.map(f=>f.substring(5)),
+      datasets:[{
+        label:'Neto diario',
+        data: netoDiario,
+        backgroundColor: netoDiario.map(v=>v>=0?'rgba(52,211,153,0.5)':'rgba(248,113,113,0.5)'),
+        borderColor: netoDiario.map(v=>v>=0?'#34D399':'#F87171'),
+        borderWidth:2,
+        borderRadius:6,
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'rgba(15,17,32,0.95)',
+          borderColor:'rgba(52,211,153,0.3)',borderWidth:1,
+          titleColor:'#F0F0F8',bodyColor:'#8A8EA8',
+          callbacks:{label:ctx=>' Neto: $'+Math.round(ctx.raw||0).toLocaleString('es-CO')}
+        }
+      },
+      scales:{
+        x:{grid:{color:chartGridColor()},ticks:{color:chartTextColor(),font:{size:10}}},
+        y:{grid:{color:chartGridColor()},ticks:{color:chartTextColor(),font:{size:10},callback:v=>'$'+Math.round(v/1000)+'k'}}
+      }
+    }
+  });
+
+  document.getElementById('proy-datos').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:10px;">
+        <div style="font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em;">Prom. diario (7d)</div>
+        <div style="font-family:'Syne';font-size:15px;font-weight:700;color:${promDiario>=0?'var(--ok)':'var(--danger)'};">${fmtM(promDiario)}</div>
+      </div>
+      <div style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:10px;">
+        <div style="font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em;">Proyección mes</div>
+        <div style="font-family:'Syne';font-size:15px;font-weight:700;color:${proyeccionMes>=0?'var(--ok)':'var(--danger)'};">${fmtM(proyeccionMes)}</div>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// ALERTAS
+// ============================================================
+function renderAlertas(regs, tVentas, tasaCierre, tasaNE) {
+  let alertas = '';
+  data.productos.forEach(p => {
+    const pr   = regs.filter(r=>String(r.prodId)==String(p.id));
+    const pAds = pr.reduce((a,r)=>a+r.ads,0);
+    const pConf= pr.reduce((a,r)=>a+r.confirmados,0);
+    const cpv  = pConf>0&&pAds>0 ? Math.round(pAds/pConf) : 0;
+    if (cpv > p.ganancia * 0.8)
+      alertas += `<div class="alert r"><i class="ti ti-alert-triangle"></i><span><strong>Ads caros — ${p.nombre}:</strong> CPV ${fmtM(cpv)} supera el 80% del margen (${fmtM(p.ganancia*0.8)}). Pausa o ajusta la campaña.</span></div>`;
+    else if (cpv > p.ganancia * 0.6 && cpv > 0)
+      alertas += `<div class="alert y"><i class="ti ti-alert-circle"></i><span><strong>${p.nombre}:</strong> CPV ${fmtM(cpv)} acercándose al límite. Monitorea.</span></div>`;
+  });
+  if (tVentas > 5 && tasaCierre < 75)
+    alertas += `<div class="alert y"><i class="ti ti-brand-whatsapp"></i><span><strong>Revisar WhatsApp:</strong> Tasa de cierre en ${tasaCierre}% — por debajo del 75%. Clientes por confirmar se están enfriando.</span></div>`;
+  if (tVentas > 5 && tasaNE > 25)
+    alertas += `<div class="alert r"><i class="ti ti-package-off"></i><span><strong>Tasa de no entrega alta:</strong> ${tasaNE}% de pedidos no se entregaron. Revisa causas de devolución.</span></div>`;
+  const diasEscalar = verificarEscalar(regs);
+  if (diasEscalar >= 3)
+    alertas += `<div class="alert g"><i class="ti ti-trending-up"></i><span><strong>🚀 Oportunidad de escalar:</strong> ${diasEscalar} días consecutivos con neto positivo. Momento ideal para aumentar el presupuesto en Meta Ads.</span></div>`;
+  if (!alertas)
+    alertas = '<div class="alert g"><i class="ti ti-circle-check"></i><span>Todo bajo control. No hay alertas activas en este período.</span></div>';
+  document.getElementById('dash-alertas').innerHTML = alertas;
+}
+
+function verificarEscalar(regs) {
+  const porFecha = {};
+  regs.forEach(r => { porFecha[r.fecha] = (porFecha[r.fecha]||0) + r.neto; });
+  const fechas = Object.keys(porFecha).sort().reverse();
+  let c = 0;
+  for (const f of fechas) { if (porFecha[f]>0) c++; else break; }
+  return c;
+}
+
+// ============================================================
+// SEMÁFORO PRODUCTOS
+// ============================================================
+function renderSemaforo(regs) {
+  const cards = data.productos.map(p => {
+    const pr    = regs.filter(r=>String(r.prodId)==String(p.id));
+    const pAds  = pr.reduce((a,r)=>a+r.ads,0);
+    const pConf = pr.reduce((a,r)=>a+r.confirmados,0);
+    const pNeto = pr.reduce((a,r)=>a+r.neto,0);
+    const pCancel=pr.reduce((a,r)=>a+r.cancelados,0);
+    const pVent = pr.reduce((a,r)=>a+r.ventas,0);
+    const cpv   = pConf>0&&pAds>0 ? Math.round(pAds/pConf) : 0;
+    const z     = cpvZona(cpv, p.ganancia);
+    const tasa  = pVent>0 ? Math.round(pCancel/pVent*100) : 0;
+    return `<div class="pcard">
+      <div class="badge ${z}" style="margin-bottom:6px;">${cpvLabel(cpv,p.ganancia)}</div>
+      <div class="pname">${p.nombre}</div>
+      <div class="prow"><span>CPV</span><span style="color:${z==='r'?'var(--danger)':z==='y'?'var(--warn)':'var(--ok)'}">${cpv>0?fmtM(cpv):'—'}</span></div>
+      <div class="prow"><span>Cancel %</span><span>${tasa}%</span></div>
+      <div class="prow"><span>Neto período</span><span style="color:${pNeto>=0?'var(--ok)':'var(--danger)'}">${fmtM(pNeto)}</span></div>
+    </div>`;
+  }).join('');
+  document.getElementById('dash-productos').innerHTML =
+    '<div class="grid3" style="margin-top:4px;">' + (cards||'<p style="font-size:12px;color:var(--text3)">Sin datos en este período.</p>') + '</div>';
+}
+
+// ============================================================
+// ASESORES
+// ============================================================
+const ASESOR_GRADS = ['var(--grad-v)','var(--grad-c)','var(--grad-p)','var(--grad-g)'];
+function renderAsesores(regs) {
+  const nombres = [...new Set(regs.map(r=>r.asesor).filter(Boolean))];
+  if (!nombres.length) {
+    document.getElementById('dash-asesores').innerHTML = '<p style="font-size:12px;color:var(--text3)">Sin datos en este período.</p>';
+    return;
+  }
+  document.getElementById('dash-asesores').innerHTML = nombres.map((nombre,i) => {
+    const ar    = regs.filter(r=>r.asesor===nombre);
+    const aConf = ar.reduce((a,r)=>a+r.confirmados,0);
+    const aVent = ar.reduce((a,r)=>a+r.ventas,0);
+    const aNeto = ar.reduce((a,r)=>a+r.neto,0);
+    const aCierre = aVent>0 ? Math.round(aConf/aVent*100) : 0;
+    const grad  = ASESOR_GRADS[i % ASESOR_GRADS.length];
+    return `<div class="asesor-card">
+      <div class="asesor-avatar" style="background:${grad};">${nombre.charAt(0)}</div>
+      <div class="asesor-name">${nombre}</div>
+      <div class="prow"><span>Ventas</span><span>${aVent}</span></div>
+      <div class="prow"><span>Confirmados</span><span>${aConf}</span></div>
+      <div class="prow"><span>Cierre</span><span><span class="badge ${aCierre>=75?'g':'r'}">${aCierre}%</span></span></div>
+      <div class="prow"><span>Neto est.</span><span style="color:${aNeto>=0?'var(--ok)':'var(--danger)'};">${fmtM(aNeto)}</span></div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// REGISTRO
+// ============================================================
+function initRegistro() {
+  const sel = document.getElementById('reg-producto');
+  sel.innerHTML = data.productos.map(p=>`<option value="${p.id}">${p.nombre}</option>`).join('');
+  document.getElementById('reg-fecha').value = hoyStr();
+}
+function guardarRegistro() {
+  const fecha        = document.getElementById('reg-fecha').value;
+  const prodId       = parseInt(document.getElementById('reg-producto').value);
+  const ads          = parseFloat(document.getElementById('reg-ads').value)||0;
+  const ventas       = parseInt(document.getElementById('reg-ventas').value)||0;
+  const confirmados  = parseInt(document.getElementById('reg-confirmados').value)||0;
+  const cancelados   = parseInt(document.getElementById('reg-cancelados').value)||0;
+  const devoluciones = parseInt(document.getElementById('reg-devoluciones').value)||0;
+  const porconfirmar = parseInt(document.getElementById('reg-porconfirmar').value)||0;
+  const causa        = document.getElementById('reg-causa').value;
+  if (!fecha||!prodId) { alert('Completa fecha y producto'); return; }
+  const prod = data.productos.find(p=>p.id==prodId);
+  if (!prod) return;
+  const { ganancia_bruta, costo_dev, neto, cpv } = calcNeto(confirmados, ads, devoluciones, prod);
+  const reg = { id:Date.now(), fecha, prodId, asesor:session.nombre, ads, ventas, confirmados, cancelados, devoluciones, causa_devolucion:causa, porconfirmar, ganancia_bruta, costo_dev, neto, cpv };
+  setBtn('btn-guardar-reg', true);
+  api('saveRegistro', reg)
+    .then(() => {
+      data.registros.push(reg);
+      toast('✓ Registro guardado');
+      ['reg-ads','reg-ventas','reg-confirmados','reg-cancelados','reg-devoluciones','reg-porconfirmar'].forEach(id=>document.getElementById(id).value='');
+      document.getElementById('reg-causa').value='';
+    })
+    .catch(err=>toast('Error: '+err.message))
+    .finally(()=>setBtn('btn-guardar-reg',false));
+}
+
+// ============================================================
+// EDICIÓN
+// ============================================================
+function abrirEdicion(id) {
+  const reg = data.registros.find(r=>String(r.id)===String(id));
+  if (!reg) return;
+  ['id','fecha','ads','ventas','confirmados','cancelados','devoluciones','porconfirmar'].forEach(f=>{
+    const el = document.getElementById('edit-'+f);
+    if (el) el.value = reg[f]||'';
+  });
+  document.getElementById('edit-causa').value = reg.causa_devolucion||'';
+  document.getElementById('edit-producto').innerHTML =
+    data.productos.map(p=>`<option value="${p.id}" ${p.id==reg.prodId?'selected':''}>${p.nombre}</option>`).join('');
+  document.getElementById('modal-edit').classList.add('open');
+}
+function cerrarModal() { document.getElementById('modal-edit').classList.remove('open'); }
+function guardarEdicion() {
+  const id          = document.getElementById('edit-id').value;
+  const fecha       = document.getElementById('edit-fecha').value;
+  const prodId      = parseInt(document.getElementById('edit-producto').value);
+  const ads         = parseFloat(document.getElementById('edit-ads').value)||0;
+  const ventas      = parseInt(document.getElementById('edit-ventas').value)||0;
+  const confirmados = parseInt(document.getElementById('edit-confirmados').value)||0;
+  const cancelados  = parseInt(document.getElementById('edit-cancelados').value)||0;
+  const devoluciones= parseInt(document.getElementById('edit-devoluciones').value)||0;
+  const porconfirmar= parseInt(document.getElementById('edit-porconfirmar').value)||0;
+  const causa       = document.getElementById('edit-causa').value;
+  const prod = data.productos.find(p=>p.id==prodId);
+  if (!prod) return;
+  const { ganancia_bruta, costo_dev, neto, cpv } = calcNeto(confirmados, ads, devoluciones, prod);
+  const reg = { id, fecha, prodId, asesor:session.nombre, ads, ventas, confirmados, cancelados, devoluciones, causa_devolucion:causa, porconfirmar, ganancia_bruta, costo_dev, neto, cpv };
+  setBtn('btn-save-edit', true);
+  api('updateRegistro', reg)
+    .then(() => {
+      const idx = data.registros.findIndex(r=>String(r.id)===String(id));
+      if (idx>=0) data.registros[idx] = reg;
+      cerrarModal(); renderHistorial();
+      if (session.rol==='admin') renderDashboard();
+      toast('✓ Registro actualizado');
+    })
+    .catch(err=>toast('Error: '+err.message))
+    .finally(()=>setBtn('btn-save-edit',false));
+}
+function eliminarRegistro(id) {
+  if (!confirm('¿Eliminar este registro?')) return;
+  apiId('deleteRegistro', id)
+    .then(()=>{
+      data.registros = data.registros.filter(r=>String(r.id)!==String(id));
+      renderHistorial();
+      if (session.rol==='admin') renderDashboard();
+      toast('Registro eliminado');
+    })
+    .catch(err=>toast('Error: '+err.message));
+}
+
+// ============================================================
+// HISTORIAL
+// ============================================================
+function renderHistorial() {
+  const selProd = document.getElementById('hist-filtro-prod');
+  const selMes  = document.getElementById('hist-filtro-mes');
+  const prevP   = selProd.value, prevM = selMes.value;
+  selProd.innerHTML = '<option value="">Todos los productos</option>' +
+    data.productos.map(p=>`<option value="${p.id}">${p.nombre}</option>`).join('');
+  const meses = [...new Set(data.registros.map(r=>r.fecha?.substring(0,7)).filter(Boolean))].sort().reverse();
+  selMes.innerHTML = '<option value="">Todos los meses</option>' +
+    meses.map(m=>`<option value="${m}">${m}</option>`).join('');
+  selProd.value = prevP; selMes.value = prevM;
+  let regs = [...data.registros].sort((a,b)=>b.fecha?.localeCompare(a.fecha));
+  if (selProd.value) regs = regs.filter(r=>String(r.prodId)==selProd.value);
+  if (selMes.value)  regs = regs.filter(r=>r.fecha?.startsWith(selMes.value));
+  const tbody = document.getElementById('hist-body');
+  if (!regs.length) {
+    tbody.innerHTML='<tr><td colspan="12" style="text-align:center;color:var(--text3);padding:2rem;">Sin registros.</td></tr>';
+    document.getElementById('hist-resumen').innerHTML=''; return;
+  }
+  tbody.innerHTML = regs.map(r => {
+    const prod = data.productos.find(p=>String(p.id)==String(r.prodId));
+    const pname = prod?prod.nombre:'—';
+    const z = prod?cpvZona(r.cpv,prod.ganancia):'y';
+    const puedeEliminar = session.rol==='admin';
+    const puedeEditar   = session.rol==='admin'||r.asesor===session.nombre;
+    return `<tr>
+      <td class="mono">${r.fecha}</td>
+      <td><span class="badge gray">${r.asesor||'—'}</span></td>
+      <td>${pname}</td>
+      <td class="mono">${fmtM(r.ads)}</td>
+      <td>${r.ventas}</td>
+      <td style="color:var(--ok)">${r.confirmados}</td>
+      <td style="color:var(--danger)">${r.cancelados}</td>
+      <td style="color:var(--warn)">${r.devoluciones}</td>
+      <td style="font-size:11px;color:var(--text2);max-width:120px;">${r.causa_devolucion||'—'}</td>
+      <td class="mono" style="color:var(--${z==='g'?'ok':z==='r'?'danger':'warn'})">${r.cpv>0?fmtM(r.cpv):'—'}</td>
+      <td class="mono" style="color:var(--${r.neto>=0?'ok':'danger'})">${fmtM(r.neto)}</td>
+      <td style="display:flex;gap:4px;">
+        ${puedeEditar?`<button class="btn sm edit" onclick="abrirEdicion('${r.id}')"><i class="ti ti-edit"></i></button>`:''}
+        ${puedeEliminar?`<button class="btn sm danger" onclick="eliminarRegistro('${r.id}')"><i class="ti ti-trash"></i></button>`:''}
+      </td>
+    </tr>`;
+  }).join('');
+  const tNeto  = regs.reduce((a,r)=>a+r.neto,0);
+  const tAds   = regs.reduce((a,r)=>a+r.ads,0);
+  const tConf  = regs.reduce((a,r)=>a+r.confirmados,0);
+  const tBruto = regs.reduce((a,r)=>a+r.ganancia_bruta,0);
+  document.getElementById('hist-resumen').innerHTML = `
+    <div class="metric neon-g"><div class="lbl">Ganancia bruta</div><div class="val g">${fmtM(tBruto)}</div></div>
+    <div class="metric neon-p"><div class="lbl">Ads invertidos</div><div class="val r">${fmtM(tAds)}</div></div>
+    <div class="metric"><div class="lbl">Confirmados</div><div class="val v">${tConf}</div></div>
+    <div class="metric neon-v"><div class="lbl">Neto estimado</div><div class="val ${tNeto>=0?'g':'r'}">${fmtM(tNeto)}</div></div>
+  `;
+}
+
+// ============================================================
+// PRODUCTOS
+// ============================================================
+function guardarProducto() {
+  const nombre    = document.getElementById('prod-nombre').value.trim();
+  const ganancia  = parseFloat(document.getElementById('prod-ganancia').value)||40000;
+  const devolucion= parseFloat(document.getElementById('prod-devolucion').value)||22000;
+  const cpvmax    = parseFloat(document.getElementById('prod-cpvmax').value)||30000;
+  if (!nombre) { alert('Escribe el nombre del producto'); return; }
+  const prod = { id:Date.now(), nombre, ganancia, devolucion, cpvmax };
+  api('saveProducto', prod)
+    .then(()=>{ data.productos.push(prod); document.getElementById('prod-nombre').value=''; toast('✓ Producto guardado'); renderProductos(); initRegistro(); })
+    .catch(err=>toast('Error: '+err.message));
+}
+function eliminarProducto(id) {
+  if (!confirm('¿Eliminar este producto?')) return;
+  apiId('deleteProducto', id)
+    .then(()=>{ data.productos=data.productos.filter(p=>String(p.id)!==String(id)); renderProductos(); toast('Eliminado'); })
+    .catch(err=>toast('Error: '+err.message));
+}
+function renderProductos() {
+  const cont = document.getElementById('lista-productos');
+  if (!cont) return;
+  if (!data.productos.length) { cont.innerHTML='<p style="font-size:12px;color:var(--text3)">Sin productos.</p>'; return; }
+  cont.innerHTML = '<div class="grid3">'+data.productos.map(p=>{
+    const regs = data.registros.filter(r=>String(r.prodId)==String(p.id));
+    const tAds = regs.reduce((a,r)=>a+r.ads,0);
+    const tConf= regs.reduce((a,r)=>a+r.confirmados,0);
+    const tNeto= regs.reduce((a,r)=>a+r.neto,0);
+    const cpv  = tConf>0&&tAds>0?Math.round(tAds/tConf):0;
+    const z    = cpvZona(cpv,p.ganancia);
+    return `<div class="pcard">
+      <div class="badge ${z}" style="margin-bottom:6px;">${cpvLabel(cpv,p.ganancia)}</div>
+      <div class="pname">${p.nombre}</div>
+      <div class="prow"><span>Ganancia/venta</span><span>${fmtM(p.ganancia)}</span></div>
+      <div class="prow"><span>CPV máx</span><span>${fmtM(p.cpvmax)}</span></div>
+      <div class="prow"><span>CPV actual</span><span style="color:${z==='r'?'var(--danger)':z==='y'?'var(--warn)':'var(--ok)'}">${cpv>0?fmtM(cpv):'—'}</span></div>
+      <div class="prow"><span>Neto acumulado</span><span style="color:${tNeto>=0?'var(--ok)':'var(--danger)'}">${fmtM(tNeto)}</span></div>
+      <div style="margin-top:12px;"><button class="btn sm danger" onclick="eliminarProducto(${p.id})"><i class="ti ti-trash"></i> Eliminar</button></div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+// ============================================================
+// GASTOS
+// ============================================================
+function renderGastos() {
+  document.getElementById('gf-mes').value = hoyStr().substring(0,7);
+  cargarGastosMes();
+}
+function cargarGastosMes() {
+  const mes = document.getElementById('gf-mes').value;
+  if (!mes) return;
+  setSyncState('syncing');
+  fetch(SCRIPT_URL+'?action=loadGastosMes&mes='+mes+'&usuario='+session.usuario)
+    .then(r=>r.json()).then(res=>{
+      if (!res.ok) throw new Error(res.error);
+      setSyncState('ok');
+      const g = res.data;
+      document.getElementById('gf-equipo').value       = g.equipo||'';
+      document.getElementById('gf-herramientas').value = g.herramientas||'';
+      document.getElementById('gf-personal').value     = g.personal||'';
+      document.getElementById('gf-otros').value        = g.otros||'';
+      renderGastosResumen(g);
+    }).catch(err=>{ setSyncState('error'); toast('Error: '+err.message); });
+}
+function guardarGastos() {
+  const g = {
+    mes:          document.getElementById('gf-mes').value,
+    equipo:       parseFloat(document.getElementById('gf-equipo').value)||0,
+    herramientas: parseFloat(document.getElementById('gf-herramientas').value)||0,
+    personal:     parseFloat(document.getElementById('gf-personal').value)||0,
+    otros:        parseFloat(document.getElementById('gf-otros').value)||0,
+  };
+  if (!g.mes) { alert('Selecciona un mes'); return; }
+  api('saveGastos', g)
+    .then(()=>{ if(g.mes===hoyStr().substring(0,7)) data.gastos=g; toast('✓ Gastos guardados'); renderGastosResumen(g); renderDashboard(); })
+    .catch(err=>toast('Error: '+err.message));
+}
+function renderGastosResumen(g) {
+  const total = (g.equipo||0)+(g.herramientas||0)+(g.personal||0)+(g.otros||0);
+  document.getElementById('gastos-resumen').innerHTML = `
+    <div class="card">
+      <div class="stitle">Resumen — ${g.mes}</div>
+      <div class="grid4">
+        <div class="metric"><div class="lbl">Equipo</div><div class="val">${fmtM(g.equipo||0)}</div></div>
+        <div class="metric"><div class="lbl">Herramientas</div><div class="val">${fmtM(g.herramientas||0)}</div></div>
+        <div class="metric"><div class="lbl">Retiro personal</div><div class="val">${fmtM(g.personal||0)}</div></div>
+        <div class="metric"><div class="lbl">Otros</div><div class="val">${fmtM(g.otros||0)}</div></div>
+      </div>
+      <div style="margin-top:10px;padding:12px 16px;background:var(--danger-bg);border:1px solid rgba(248,113,113,0.2);border-radius:10px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:12px;color:var(--text2);">Total gastos fijos del mes</span>
+        <span style="font-family:'Syne';font-size:20px;font-weight:700;color:var(--danger);">${fmtM(total)}</span>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// EVENTOS
+// ============================================================
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') cerrarModal(); });
+document.getElementById('modal-edit').addEventListener('click', function(e){ if(e.target===this) cerrarModal(); });
+</script>
+</body>
+</html>
